@@ -5,9 +5,9 @@ import { COLORS } from "../constants";
 import MyObject from "./MyObject";
 
 const GROUND_SIZE = {
-  width: 30,
+  width: 40,
   height: 0.5,
-  depth: 30,
+  depth: 40,
 };
 
 export default class Ground extends MyObject {

@@ -1,5 +1,7 @@
 import * as THREE from "three";
 import * as CANNON from "cannon-es";
+import vertexShader from "./shaders/vertex.glsl?raw";
+import fragmentShader from "./shaders/fragment.glsl?raw";
 import MyObject from "./MyObject";
 import { getRandomNumberBetween } from "../utils";
 
@@ -30,13 +32,23 @@ export default class FakeCd extends MyObject {
       CD_SIZE.height,
       32
     );
-    const material = new THREE.ShaderMaterial({});
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        uTexture: { value: texture },
+        uOrder: { value: order },
+      },
+      vertexShader,
+      fragmentShader,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+      depthTest: false,
+    });
     const mesh = new THREE.Mesh(geometry, material);
     mesh.position.z = getRandomNumberBetween(-10, 10);
     this.mesh = mesh;
 
     const physicsShape = new CANNON.Plane();
-    const body = new CANNON.Body({ shape: physicsShape, mass: 2 });
+    const body = new CANNON.Body({ shape: physicsShape, mass: 5 });
     body.position.set(
       getRandomNumberBetween(-10, 10),
       getRandomNumberBetween(-10, 10),

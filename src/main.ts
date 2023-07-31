@@ -32,7 +32,7 @@ const init = () => {
   world.allowSleep = true;
 
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-  camera.position.set(0, 10, 30);
+  camera.position.set(0, 7, 30);
   scene.add(camera);
 
   const controls = new OrbitControls(camera, renderer.domElement);
@@ -65,9 +65,6 @@ const init = () => {
       }
     }
   };
-
-  // const cd1 = new Cd(scene, world, textures[currentTopsterType], 0);
-  // const cd1 = new Cd(scene, world, textures[currentTopsterType], 0);
 
   const topster = new Topster(scene, world, textures[currentTopsterType], handleTopsterCollide);
   topster.display();
