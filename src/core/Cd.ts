@@ -42,7 +42,7 @@ export default class Cd extends MyObject {
     );
     const physicsMaterial = new CANNON.Material({
       friction: 0.3,
-      restitution: 0.01,
+      restitution: 0.5,
     });
     const body = new CANNON.Body({
       shape: physicsShape,

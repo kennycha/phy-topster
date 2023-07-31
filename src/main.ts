@@ -54,7 +54,7 @@ const init = () => {
 
   const handleTopsterCollide = () => {
     for (let i = 0; i < TOTAL_CD_COUNT; i += 1) {
-      if (i % 6) {
+      if (i % 3) {
         const cd = new Cd(scene, world, textures[currentTopsterType], i);
         cd.display();
         cds.push(cd);

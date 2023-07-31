@@ -32,16 +32,16 @@ export default class FakeCd extends MyObject {
     );
     const material = new THREE.ShaderMaterial({});
     const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.z = getRandomNumberBetween(-10, 10);
     this.mesh = mesh;
 
     const physicsShape = new CANNON.Plane();
-    const body = new CANNON.Body({ shape: physicsShape, mass: 1 });
+    const body = new CANNON.Body({ shape: physicsShape, mass: 2 });
     body.position.set(
       getRandomNumberBetween(-10, 10),
       getRandomNumberBetween(-10, 10),
       getRandomNumberBetween(-10, 10)
     );
-    body.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI / 2);
     this.body = body;
   }
 
@@ -56,8 +56,9 @@ export default class FakeCd extends MyObject {
   }
 
   update() {
-    if (this.body.velocity.distanceTo(new CANNON.Vec3(0, 0, 0)) < 0.5) return;
-    this.mesh.position.set(this.body.position.x, this.body.position.y, this.body.position.z);
+    if (this.mesh.position.y <= -9.5) return;
+    // cannon-es Plane Shape의 position.z 업데이트 버그로 보임
+    this.mesh.position.set(this.body.position.x, this.body.position.y, this.mesh.position.z);
     this.mesh.quaternion.set(
       this.body.quaternion.x,
       this.body.quaternion.y,
