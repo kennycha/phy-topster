@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import * as CANNON from "cannon-es";
-import { TopsterTypes } from "../types";
-import { textureLoader } from "./loaders";
+import MyObject from "./MyObject";
 
 const TOPSTER_SIZE = {
   width: 10,
@@ -9,15 +8,13 @@ const TOPSTER_SIZE = {
   depth: 1,
 };
 
-export default class Topster {
+export default class Topster extends MyObject {
   mesh: THREE.Mesh;
   body: CANNON.Body;
+  isCollided = false;
 
-  constructor(type: TopsterTypes) {
-    const textures = {
-      domestic: textureLoader.load("topster_domestic.jpg"),
-      overseas: textureLoader.load("topster_overseas.jpg"),
-    };
+  constructor(scene: THREE.Scene, world: CANNON.World, texture: THREE.Texture, onCollide: () => void) {
+    super(scene, world);
 
     const geometry = new THREE.BoxGeometry(TOPSTER_SIZE.width, TOPSTER_SIZE.height, TOPSTER_SIZE.depth);
     const materials = [
@@ -25,8 +22,8 @@ export default class Topster {
       new THREE.MeshBasicMaterial({ color: 0x000000 }),
       new THREE.MeshBasicMaterial({ color: 0x000000 }),
       new THREE.MeshBasicMaterial({ color: 0x000000 }),
-      new THREE.MeshBasicMaterial({ map: textures[type] }),
-      new THREE.MeshBasicMaterial({ map: textures[type] }),
+      new THREE.MeshBasicMaterial({ map: texture }),
+      new THREE.MeshBasicMaterial({ map: texture }),
     ];
     const mesh = new THREE.Mesh(geometry, materials);
     this.mesh = mesh;
@@ -37,7 +34,7 @@ export default class Topster {
     const physicsMaterial = new CANNON.Material({
       // @TODO option 조절
       friction: 1,
-      restitution: 0.5,
+      restitution: 0.7,
     });
     const body = new CANNON.Body({
       shape: physicsShape,
@@ -48,11 +45,26 @@ export default class Topster {
     body.position.y = 10;
     body.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), -Math.PI / 6);
     this.body = body;
+
+    this.body.addEventListener("collide", () => {
+      if (this.isCollided) return;
+      this.isCollided = true;
+
+      setTimeout(() => {
+        onCollide();
+        this.dispose();
+      }, 1000);
+    });
   }
 
-  display(scene: THREE.Scene, world: CANNON.World) {
-    scene.add(this.mesh);
-    world.addBody(this.body);
+  display() {
+    this.scene.add(this.mesh);
+    this.world.addBody(this.body);
+  }
+
+  dispose() {
+    this.scene.remove(this.mesh);
+    this.world.removeBody(this.body);
   }
 
   drop() {

@@ -2,6 +2,7 @@ import * as THREE from "three";
 import * as CANNON from "cannon-es";
 import { textureLoader } from "./loaders";
 import { COLORS } from "../constants";
+import MyObject from "./MyObject";
 
 const GROUND_SIZE = {
   width: 30,
@@ -9,11 +10,13 @@ const GROUND_SIZE = {
   depth: 30,
 };
 
-export default class Ground {
+export default class Ground extends MyObject {
   mesh: THREE.Mesh;
   body: CANNON.Body;
 
-  constructor() {
+  constructor(scene: THREE.Scene, world: CANNON.World) {
+    super(scene, world);
+
     const texture = textureLoader.load("wall.jpg");
 
     const geometry = new THREE.BoxGeometry(GROUND_SIZE.width, GROUND_SIZE.height, GROUND_SIZE.depth);
@@ -37,9 +40,9 @@ export default class Ground {
     this.body = body;
   }
 
-  display(scene: THREE.Scene, world: CANNON.World) {
-    scene.add(this.mesh);
-    world.addBody(this.body);
+  display() {
+    this.scene.add(this.mesh);
+    this.world.addBody(this.body);
   }
 
   update() {
