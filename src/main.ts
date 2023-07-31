@@ -5,6 +5,7 @@ import Topster from "./core/Topster";
 import Ground from "./core/Ground";
 import { COLORS } from "./constants";
 import Cd from "./core/Cd";
+import FakeCd from "./core/FakeCd";
 import { textureLoader } from "./core/loaders";
 
 const TOTAL_CD_COUNT = 42;
@@ -53,9 +54,15 @@ const init = () => {
 
   const handleTopsterCollide = () => {
     for (let i = 0; i < TOTAL_CD_COUNT; i += 1) {
-      const cd = new Cd(scene, world, textures[currentTopsterType], i);
-      cd.display();
-      cds.push(cd);
+      if (i % 6) {
+        const cd = new Cd(scene, world, textures[currentTopsterType], i);
+        cd.display();
+        cds.push(cd);
+      } else {
+        const cd = new FakeCd(scene, world, textures[currentTopsterType], i);
+        cd.display();
+        cds.push(cd);
+      }
     }
   };
 
@@ -68,7 +75,7 @@ const init = () => {
   // @TODO topster drop 버튼 이벤트
   setTimeout(() => {
     topster.drop();
-  }, 1000);
+  }, 300);
 
   const draw = () => {
     renderer.render(scene, camera);

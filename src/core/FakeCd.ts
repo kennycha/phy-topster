@@ -8,7 +8,7 @@ const CD_SIZE = {
   height: 0.1,
 };
 
-export default class Cd extends MyObject {
+export default class FakeCd extends MyObject {
   mesh: THREE.Mesh;
   body: CANNON.Body;
 
@@ -34,33 +34,20 @@ export default class Cd extends MyObject {
     const mesh = new THREE.Mesh(geometry, material);
     this.mesh = mesh;
 
-    const physicsShape = new CANNON.Cylinder(
-      CD_SIZE.radius * scaleFactor,
-      CD_SIZE.radius * scaleFactor,
-      CD_SIZE.height,
-      32
-    );
-    const physicsMaterial = new CANNON.Material({
-      friction: 0.3,
-      restitution: 0.01,
-    });
-    const body = new CANNON.Body({
-      shape: physicsShape,
-      material: physicsMaterial,
-      mass: 2,
-    });
+    const physicsShape = new CANNON.Plane();
+    const body = new CANNON.Body({ shape: physicsShape, mass: 1 });
     body.position.set(
       getRandomNumberBetween(-10, 10),
       getRandomNumberBetween(-10, 10),
       getRandomNumberBetween(-10, 10)
     );
+    body.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI / 2);
     this.body = body;
   }
 
   display() {
     this.scene.add(this.mesh);
     this.world.addBody(this.body);
-    this.body.applyImpulse(new CANNON.Vec3(0, 1, 0), this.body.position);
   }
 
   dispose() {
