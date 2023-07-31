@@ -40,8 +40,6 @@ export default class FakeCd extends MyObject {
       vertexShader,
       fragmentShader,
       side: THREE.DoubleSide,
-      depthWrite: false,
-      depthTest: false,
     });
     const mesh = new THREE.Mesh(geometry, material);
     mesh.position.z = getRandomNumberBetween(-10, 10);

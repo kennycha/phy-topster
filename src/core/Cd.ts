@@ -40,8 +40,6 @@ export default class Cd extends MyObject {
       vertexShader,
       fragmentShader,
       side: THREE.DoubleSide,
-      depthWrite: false,
-      depthTest: false,
     });
     const mesh = new THREE.Mesh(geometry, material);
     this.mesh = mesh;
