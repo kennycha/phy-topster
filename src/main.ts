@@ -62,7 +62,7 @@ const init = () => {
   };
 
   let topster: Topster;
-  let cds: Cd[] = [];
+  let cds: (Cd | FakeCd)[] = [];
 
   const handleTopsterCollide = () => {
     for (let i = 0; i < TOTAL_CD_COUNT; i += 1) {

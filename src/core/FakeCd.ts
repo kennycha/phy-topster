@@ -4,6 +4,7 @@ import vertexShader from "./shaders/vertex.glsl?raw";
 import fragmentShader from "./shaders/fragment.glsl?raw";
 import MyObject from "./MyObject";
 import { getRandomNumberBetween } from "../utils";
+import { COLORS } from "../constants";
 
 const CD_SIZE = {
   radius: 1,
@@ -45,6 +46,16 @@ export default class FakeCd extends MyObject {
     mesh.position.z = getRandomNumberBetween(-10, 10);
     mesh.name = "cd";
     this.mesh = mesh;
+
+    const circleGeometry = new THREE.CylinderGeometry(
+      (CD_SIZE.radius * scaleFactor) / 6,
+      (CD_SIZE.radius * scaleFactor) / 6,
+      CD_SIZE.height * 1.1,
+      32
+    );
+    const circleMaterial = new THREE.MeshBasicMaterial({ color: COLORS.circle });
+    const circle = new THREE.Mesh(circleGeometry, circleMaterial);
+    mesh.add(circle);
 
     const physicsShape = new CANNON.Plane();
     const body = new CANNON.Body({ shape: physicsShape, mass: 5 });
