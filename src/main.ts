@@ -7,10 +7,20 @@ import { COLORS } from "./constants";
 import Cd from "./core/Cd";
 import FakeCd from "./core/FakeCd";
 import { textureLoader } from "./core/loaders";
+import { observable, observe } from "./state/observer";
+import { TopsterTypes } from "./types";
 
 const TOTAL_CD_COUNT = 42;
 
+interface AppState {
+  currentTopsterType: TopsterTypes;
+}
+
 const init = () => {
+  const appState = observable<AppState>({
+    currentTopsterType: "domestic",
+  });
+
   const renderer = new THREE.WebGLRenderer({
     alpha: true,
     antialias: true,
@@ -20,7 +30,10 @@ const init = () => {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
   const app = document.querySelector("#app");
-  if (!app) return;
+  const changeButton = document.querySelector("#changeButton") as HTMLButtonElement;
+  const overseasIcon = document.querySelector("#overseasIcon") as HTMLImageElement;
+  const domesticIcon = document.querySelector("#domesticIcon") as HTMLImageElement;
+  if (!app || !changeButton || !overseasIcon || !domesticIcon) return;
   app.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
@@ -32,10 +45,11 @@ const init = () => {
   world.allowSleep = true;
 
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-  camera.position.set(0, 7, 30);
+  camera.position.set(4.3182, 11.2631, 33.9303);
   scene.add(camera);
 
   const controls = new OrbitControls(camera, renderer.domElement);
+  controls.target.set(-0.3205, -4.6623, 1.9448);
   controls.minDistance = 5;
   controls.maxDistance = 40;
 
@@ -47,32 +61,47 @@ const init = () => {
     overseas: textureLoader.load("topster_overseas.jpg"),
   };
 
-  // @TODO topster 종류 state
-  const currentTopsterType = "domestic";
-
-  const cds: Cd[] = [];
+  let topster: Topster;
+  let cds: Cd[] = [];
 
   const handleTopsterCollide = () => {
     for (let i = 0; i < TOTAL_CD_COUNT; i += 1) {
       if (i % 3) {
-        const cd = new Cd(scene, world, textures[currentTopsterType], i);
+        const cd = new Cd(scene, world, textures[appState.currentTopsterType], i);
         cd.display();
         cds.push(cd);
       } else {
-        const cd = new FakeCd(scene, world, textures[currentTopsterType], i);
+        const cd = new FakeCd(scene, world, textures[appState.currentTopsterType], i);
         cd.display();
         cds.push(cd);
       }
     }
   };
 
-  const topster = new Topster(scene, world, textures[currentTopsterType], handleTopsterCollide);
-  topster.display();
+  const displayObjects = (topsterType: TopsterTypes) => {
+    topster = new Topster(scene, world, textures[topsterType], handleTopsterCollide);
+    topster.display();
+  };
 
-  // @TODO topster drop 버튼 이벤트
-  setTimeout(() => {
-    topster.drop();
-  }, 300);
+  const clearObjects = () => {
+    if (topster) {
+      topster.dispose();
+    }
+
+    cds.forEach((cd) => {
+      cd.dispose();
+    });
+    cds = [];
+  };
+
+  observe(() => {
+    clearObjects();
+    displayObjects(appState.currentTopsterType);
+
+    setTimeout(() => {
+      topster.drop();
+    }, 200);
+  });
 
   const draw = () => {
     renderer.render(scene, camera);
@@ -90,6 +119,18 @@ const init = () => {
 
   draw();
 
+  const handleChangeButtonClick = () => {
+    if (appState.currentTopsterType === "domestic") {
+      overseasIcon.style.display = "none";
+      domesticIcon.style.display = "block";
+      appState.currentTopsterType = "overseas";
+    } else {
+      overseasIcon.style.display = "block";
+      domesticIcon.style.display = "none";
+      appState.currentTopsterType = "domestic";
+    }
+  };
+
   const handleResize = () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -99,6 +140,7 @@ const init = () => {
   };
 
   window.addEventListener("resize", handleResize);
+  changeButton.addEventListener("click", handleChangeButtonClick);
 };
 
 window.addEventListener("load", init);

@@ -3,8 +3,8 @@ import * as CANNON from "cannon-es";
 import MyObject from "./MyObject";
 
 const TOPSTER_SIZE = {
-  width: 10,
-  height: 10,
+  width: 15,
+  height: 15,
   depth: 1,
 };
 
@@ -26,6 +26,9 @@ export default class Topster extends MyObject {
       new THREE.MeshBasicMaterial({ map: texture }),
     ];
     const mesh = new THREE.Mesh(geometry, materials);
+    mesh.name = "topster";
+    mesh.position.y = 10;
+    mesh.quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI / 6);
     this.mesh = mesh;
 
     const physicsShape = new CANNON.Box(

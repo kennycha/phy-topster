@@ -43,6 +43,7 @@ export default class FakeCd extends MyObject {
     });
     const mesh = new THREE.Mesh(geometry, material);
     mesh.position.z = getRandomNumberBetween(-10, 10);
+    mesh.name = "cd";
     this.mesh = mesh;
 
     const physicsShape = new CANNON.Plane();

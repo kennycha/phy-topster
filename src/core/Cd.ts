@@ -42,6 +42,7 @@ export default class Cd extends MyObject {
       side: THREE.DoubleSide,
     });
     const mesh = new THREE.Mesh(geometry, material);
+    mesh.name = "cd";
     this.mesh = mesh;
 
     const physicsShape = new CANNON.Cylinder(

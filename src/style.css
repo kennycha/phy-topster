@@ -1,13 +1,44 @@
 @import "./reset.css";
 
 :root {
-  --text-color: #808080;
+  --text-color: #1a1a1a;
+  --border-color: #1a1a1a;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+.button-wrapper {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  padding: 24px;
+}
+
+.button-wrapper > button {
+  width: 32px;
+  height: 32px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.overseas-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.domestic-icon {
+  width: 28px;
+  height: 28px;
+  display: none;
 }
 
 .copyright-wrapper {
