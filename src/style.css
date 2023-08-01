@@ -57,3 +57,7 @@
 .copyright-wrapper p {
   color: var(--text-color);
 }
+
+.copyright-wrapper a {
+  color: var(--text-color);
+}
